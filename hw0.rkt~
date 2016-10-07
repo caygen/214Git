@@ -1,0 +1,142 @@
+#lang dssl
+
+#| Cem Ozer
+HW0: DSSL Warmup
+|#
+
+;;;
+;;; DATA DEFINITIONS
+;;;
+
+;; Account-Id is Natural
+
+;; An Account is (account Account-Id String Number)
+(define-struct account (id owner balance))
+;; where
+;;   `id` is the account number,
+;;   `owner` is the name of the account holder, and
+;;   `balance` is the balance.
+
+;; Examples:
+(define ACCOUNT0 (account 0 "Alan Turing"    16384))
+(define ACCOUNT1 (account 1 "Grace Hopper"   32768))
+(define ACCOUNT2 (account 2 "Ada Lovelace"   32))
+(define ACCOUNT3 (account 3 "David Parnas"   2048))
+(define ACCOUNT4 (account 4 "Barbara Liskov" 8192))
+
+;; Account -> Account
+;; Copies an account structure. This is useful for testing, since
+;; you will want to copy any of your example accounts before modifying
+;; them.
+(define (account-copy old-account)
+  (account (account-id old-account)
+           (account-owner old-account)
+           (account-balance old-account)))
+
+; An account is `equal?` to its copy because they have the same
+; contents.
+(check-expect
+  (equal? (account-copy ACCOUNT2) ACCOUNT2)
+  #true)
+; However, it is not `eq?` because it’s a separate object, and mutating
+; one has no effect on the other.
+(check-expect
+  (eq? (account-copy ACCOUNT2) ACCOUNT2)
+  #false)
+
+
+;; Number Account -> Void
+;; Adds the given amount to the given account’s balance.
+;; DONE!!!
+(define (account-credit! amount account)
+  (set-account-balance! account (+ (account-balance account) amount)))
+
+
+(check-expect
+  (begin
+    (define countess-lovelace (account-copy ACCOUNT2))
+    (account-credit! 200 countess-lovelace)
+    countess-lovelace)
+  (account 2 "Ada Lovelace" 232))
+
+
+;; Number Account Account -> Void
+;; Transfers the specified amount from the first account to the second.
+;; That is, it subtracts `amount` from the `from` account’s balance and
+;; adds `amount` to the `to` account’s balance.
+(define (account-transfer! amount from to)
+  (set-account-balance! from (- (account-balance from) amount))
+  (account-credit! amount to))
+;; DONE !!!
+
+(check-expect
+  (begin
+    (define parnas (account-copy ACCOUNT3))
+    (define liskov (account-copy ACCOUNT4))
+    (account-transfer! 1000 parnas liskov)
+    (vector parnas liskov))
+  (vector (account 3 "David Parnas" 1048)
+          (account 4 "Barbara Liskov" 9192)))
+
+
+;; [Vector-of X] Natural Natural -> Void
+;; Swaps the elements with the given indices.
+(define (vector-swap! vec i j)
+  (define temp_element1 (vector-ref vec i))
+  (define temp_element2 (vector-ref vec j))
+  (vector-set! vec i temp_element2)
+  (vector-set! vec j temp_element1))
+;; DONE!!!
+
+(check-expect
+ (let ([vec (vector 2 3 4 5 6)])
+   (vector-swap! vec 1 3)
+   vec)
+ (vector 2 5 4 3 6))
+
+
+;; [Vector-of X] -> [Vector-of X]
+;; Copies a vector.
+(define (vector-copy vec)
+  (build-vector (vector-length vec) (lambda (i) (vector-ref vec i))))
+;; DONE!!!
+
+(check-expect
+ (let* ([v (vector 2 3 4)]
+        [w (vector-copy v)])
+   (vector-set! v 0 100)
+   w)
+ (vector 2 3 4))
+
+
+;; Natural [Vector-of X] -> [Vector-of X]
+;; Copies a vector into a new vector of the given length. If the new
+;; vector is shorter, elements are discarded; if longer, new elements
+;; are filled with #false.
+(define (vector-copy-resize size vec)
+  (cond
+    ((equal? size (vector-length vec)) (vector-copy vec))
+    ((< size (vector-length vec)) (build-vector size (lambda (i) (vector-ref vec i))))
+    ((> size (vector-length vec)) (build-vector size (lambda (i) (if (>= i (vector-length vec)) #false (vector-ref vec i)))))))
+;; DONE!!!
+
+(check-expect (vector-copy-resize 5 (vector 2 3 4 5 6 7 8))
+              (vector 2 3 4 5 6))
+(check-expect (vector-copy-resize 5 (vector 2 3 4))
+              (vector 2 3 4 #false #false))
+
+
+;; [Vector-of Account] -> Account
+;; Finds the account with the largest balance in a non-empty vector of
+;; accounts. (Don’t worry about ties, and assume the vector is non-empty.)
+(define (find-largest-account accounts)
+  ...)
+;; ^ FILL IN YOUR CODE HERE
+
+(check-expect
+  (find-largest-account (vector ACCOUNT0 ACCOUNT1 ACCOUNT2 ACCOUNT3 ACCOUNT4))
+  ACCOUNT1)
+(check-expect
+  (find-largest-account (vector ACCOUNT4 ACCOUNT3 ACCOUNT2 ACCOUNT1 ACCOUNT0))
+  ACCOUNT1)
+
