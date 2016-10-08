@@ -1,5 +1,5 @@
 #lang dssl
-
+;
 #|
 HW0: DSSL Warmup
 Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
@@ -155,4 +155,3 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 (check-expect
   (find-largest-account (vector ACCOUNT4 ACCOUNT3 ACCOUNT2 ACCOUNT1 ACCOUNT0))
   ACCOUNT1)
-
