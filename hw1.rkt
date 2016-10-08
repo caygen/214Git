@@ -78,8 +78,8 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 (define (list-lookup id ledger)
   (let loop ([current ledger])
     (cond
+      ((nil? current) #false)
       ((equal? id (account-id (node-element current))) (node-element current))
-      ((nil? (node-link current)) #false)
       (else (loop (node-link current))))))
 
 ;; ^ YOUR DEFINITION HER
@@ -130,25 +130,30 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 ;; Finds the account with the given `account-id` or #false if the account
 ;; doesn’t exist.
 (define (bst-lookup id ledger)
-  ...)
+  (let loop ([current ledger])
+    (cond
+      ((leaf? current) #false)
+      ((equal? id (account-id (branch-element current))) (branch-element current))
+      (else (if (< id (account-id (branch-element current)))(loop (branch-left current))(loop (branch-right current)))))))
+
 ;; ^ YOUR DEFINITION HERE
 ;
-;(check-expect (bst-lookup 0 BST-LEDGER)
-;              ACCOUNT0)
-;(check-expect (bst-lookup 8 BST-LEDGER)
-;              ACCOUNT1)
-;(check-expect (bst-lookup 16 BST-LEDGER)
-;              ACCOUNT2)
-;(check-expect (bst-lookup 20 BST-LEDGER)
-;              #false)
-;(check-expect (bst-lookup 24 BST-LEDGER)
-;              ACCOUNT3)
-;(check-expect (bst-lookup 32 BST-LEDGER)
-;              ACCOUNT4)
-;(check-expect (bst-lookup 40 BST-LEDGER)
-;              ACCOUNT5)
-;(check-expect (bst-lookup 48 BST-LEDGER)
-;              #false)
+(check-expect (bst-lookup 0 BST-LEDGER)
+              ACCOUNT0)
+(check-expect (bst-lookup 8 BST-LEDGER)
+              ACCOUNT1)
+(check-expect (bst-lookup 16 BST-LEDGER)
+              ACCOUNT2)
+(check-expect (bst-lookup 20 BST-LEDGER)
+              #false)
+(check-expect (bst-lookup 24 BST-LEDGER)
+              ACCOUNT3)
+(check-expect (bst-lookup 32 BST-LEDGER)
+              ACCOUNT4)
+(check-expect (bst-lookup 40 BST-LEDGER)
+              ACCOUNT5)
+(check-expect (bst-lookup 48 BST-LEDGER)
+              #false)
 
 
 ;;;
@@ -166,7 +171,8 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 ;; Finds the account with the given `account-id` or #false if the account
 ;; doesn’t exist.
 (define (vec-lookup id ledger)
-  ...)
+  (
+   
 ;; ^ YOUR DEFINITION HERE
 ;
 ;(check-expect (vec-lookup 0 VEC-LEDGER)
