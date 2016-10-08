@@ -137,7 +137,7 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
       (else (if (< id (account-id (branch-element current)))(loop (branch-left current))(loop (branch-right current)))))))
 
 ;; ^ YOUR DEFINITION HERE
-;
+
 (check-expect (bst-lookup 0 BST-LEDGER)
               ACCOUNT0)
 (check-expect (bst-lookup 8 BST-LEDGER)
@@ -171,26 +171,37 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 ;; Finds the account with the given `account-id` or #false if the account
 ;; doesn’t exist.
 (define (vec-lookup id ledger)
-  (
-   
+  (define start 0)
+  (define limit (vector-length ledger))
+  (define mid 0)
+  (while (< start limit)
+         (begin (set! mid (floor(/ (+ start limit) 2)))
+                (cond
+                   ((< id (account-id (vector-ref ledger mid))) (set! limit mid))
+                   ((> id (account-id (vector-ref ledger mid))) (set! start (+ mid 1)))
+                   (else (account-id (vector-ref ledger mid))))))
+  #false)
+                 
+                 
+
 ;; ^ YOUR DEFINITION HERE
 ;
-;(check-expect (vec-lookup 0 VEC-LEDGER)
-;              ACCOUNT0)
-;(check-expect (vec-lookup 8 VEC-LEDGER)
-;              ACCOUNT1)
-;(check-expect (vec-lookup 16 VEC-LEDGER)
-;              ACCOUNT2)
-;(check-expect (vec-lookup 20 VEC-LEDGER)
-;              #false)
-;(check-expect (vec-lookup 24 VEC-LEDGER)
-;              ACCOUNT3)
-;(check-expect (vec-lookup 32 VEC-LEDGER)
-;              ACCOUNT4)
-;(check-expect (vec-lookup 40 VEC-LEDGER)
-;              ACCOUNT5)
-;(check-expect (vec-lookup 48 VEC-LEDGER)
-;              #false)
+(check-expect (vec-lookup 0 VEC-LEDGER)
+              ACCOUNT0)
+(check-expect (vec-lookup 8 VEC-LEDGER)
+              ACCOUNT1)
+(check-expect (vec-lookup 16 VEC-LEDGER)
+              ACCOUNT2)
+(check-expect (vec-lookup 20 VEC-LEDGER)
+              #false)
+(check-expect (vec-lookup 24 VEC-LEDGER)
+              ACCOUNT3)
+(check-expect (vec-lookup 32 VEC-LEDGER)
+              ACCOUNT4)
+(check-expect (vec-lookup 40 VEC-LEDGER)
+              ACCOUNT5)
+(check-expect (vec-lookup 48 VEC-LEDGER)
+              #false)
 
 
 ;; Number Account-Id Account-Id Vec-Ledger -> Void
