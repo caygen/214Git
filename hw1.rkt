@@ -173,14 +173,17 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 (define (vec-lookup id ledger)
   (define start 0)
   (define limit (vector-length ledger))
-  (define mid 0)
+  (define mid (floor(/ (+ start limit) 2)))
+  ;(if (> id (account-id (vector-ref ledger limit))))
   (while (< start limit)
-         (begin (set! mid (floor(/ (+ start limit) 2)))
+         (set! mid (floor(/ (+ start limit) 2)))
                 (cond
-                   ((< id (account-id (vector-ref ledger mid))) (set! limit mid))
+                   ((< id (account-id (vector-ref ledger mid))) (begin(set! limit mid) (display mid)))
                    ((> id (account-id (vector-ref ledger mid))) (set! start (+ mid 1)))
-                   (else (account-id (vector-ref ledger mid))))))
-  #false)
+                   (else (break)))
+                )
+   (vector-ref ledger start)
+)
                  
                  
 
