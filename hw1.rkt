@@ -170,21 +170,21 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 ;; Account-Id Vec-Ledger -> [Or #false Account]
 ;; Finds the account with the given `account-id` or #false if the account
 ;; doesn’t exist.
+
+
 (define (vec-lookup id ledger)
-  (define start 0)
-  (define limit (vector-length ledger))
-  (define mid (floor(/ (+ start limit) 2)))
-  ;(if (> id (account-id (vector-ref ledger limit))))
-  (while (< start limit)
-         (set! mid (floor(/ (+ start limit) 2)))
-                (cond
-                   ((< id (account-id (vector-ref ledger mid))) (begin(set! limit mid) (display mid)))
-                   ((> id (account-id (vector-ref ledger mid))) (set! start (+ mid 1)))
-                   (else (break)))
-                )
-   (vector-ref ledger start)
-)
-                 
+  (define mid 0)
+  (let loop ([start 0][limit (- (vector-length ledger)1)])
+    (begin
+      (set! mid (floor(/ (+ start limit) 2)))
+    (cond
+      ((>= start limit) (if (equal? id (account-id(vector-ref ledger mid)))(vector-ref ledger mid) #false))
+      ((< id (account-id (vector-ref ledger mid))) (loop start  mid))
+      ((> id (account-id (vector-ref ledger mid))) (loop (+ mid 1) limit))
+      (else (if (equal? id (account-id(vector-ref ledger mid)))(vector-ref ledger mid) #false))))))
+               
+      
+                           
                  
 
 ;; ^ YOUR DEFINITION HERE
