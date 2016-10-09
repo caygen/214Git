@@ -167,6 +167,7 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 (define VEC-LEDGER (vector ACCOUNT0 ACCOUNT1 ACCOUNT2
                            ACCOUNT3 ACCOUNT4 ACCOUNT5))
 
+(define VEC-LEDGER1 (vector))
 ;; Account-Id Vec-Ledger -> [Or #false Account]
 ;; Finds the account with the given `account-id` or #false if the account
 ;; doesn’t exist.
@@ -174,6 +175,7 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 
 (define (vec-lookup id ledger)
   (define mid 0)
+  (if (equal? (vector-length ledger) 0) #false
   (let loop ([start 0][limit (- (vector-length ledger)1)])
     (begin
       (set! mid (floor(/ (+ start limit) 2)))
@@ -181,7 +183,7 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
       ((>= start limit) (if (equal? id (account-id(vector-ref ledger mid)))(vector-ref ledger mid) #false))
       ((< id (account-id (vector-ref ledger mid))) (loop start  mid))
       ((> id (account-id (vector-ref ledger mid))) (loop (+ mid 1) limit))
-      (else (if (equal? id (account-id(vector-ref ledger mid)))(vector-ref ledger mid) #false))))))
+      (else (if (equal? id (account-id(vector-ref ledger mid)))(vector-ref ledger mid) #false)))))))
                
       
                            
@@ -189,6 +191,8 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 
 ;; ^ YOUR DEFINITION HERE
 ;
+(check-expect (vec-lookup 0 VEC-LEDGER1)
+              #false)
 (check-expect (vec-lookup 0 VEC-LEDGER)
               ACCOUNT0)
 (check-expect (vec-lookup 8 VEC-LEDGER)
@@ -211,26 +215,29 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 ;; Transfers `amount` from account number `from-id` to account number
 ;; `to-id`. Calls `error` if an account isn't found.
 (define (transfer! amount from-id to-id ledger)
-  ...)
+  (define from (vec-lookup from-id ledger))
+  (define to (vec-lookup to-id ledger))
+  (if (or (equal? from #false)(equal? to #false))(error "Account not found")(account-transfer! amount from to)))
+                                                                              
 ;; ^ YOUR DEFINITION HERE
 ;
-;(check-expect
-;  (begin
-;    (define ledger (ledger-copy VEC-LEDGER))
-;    (transfer! 2000 32 24 ledger)
-;    ledger)
-;  (vector ACCOUNT0
-;          ACCOUNT1
-;          ACCOUNT2
-;          (account 24 "David Parnas" 4048)
-;          (account 32 "Barbara Liskov" 6192)
-;          ACCOUNT5))
-;
-;(check-error
-;  (begin
-;    (define ledger (ledger-copy VEC-LEDGER))
-;    (transfer! 2000 31 24 ledger))
-;  "Account not found")
+(check-expect
+  (begin
+    (define ledger (ledger-copy VEC-LEDGER))
+    (transfer! 2000 32 24 ledger)
+    ledger)
+  (vector ACCOUNT0
+          ACCOUNT1
+          ACCOUNT2
+          (account 24 "David Parnas" 4048)
+          (account 32 "Barbara Liskov" 6192)
+          ACCOUNT5))
+
+(check-error
+  (begin
+    (define ledger (ledger-copy VEC-LEDGER))
+    (transfer! 2000 31 24 ledger))
+  "Account not found")
 
 ;; Vec-Ledger -> Vec-Ledger
 ;; Makes a copy of a ledger, deep-copying the accounts within it.
