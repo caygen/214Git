@@ -1,6 +1,6 @@
 #lang dssl
 
-#| Cem Ozer
+#| Cem Ozer && Can Aygen
 HW1: Three Dictionaries
 Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 
@@ -40,7 +40,7 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 (define (account-credit! amount account)
   (set-account-balance! account (+ (account-balance account) amount)))
 
-;; ^ FILL IN YOUR DEFINITION FROM HW0
+;; ^ FILL IN YOUR DEFINITION FROM HW0 
 
 ;; Number Account Account -> Void
 ;; Transfers the specified amount from the first account to the second.
@@ -245,3 +245,28 @@ Due: Thursday, Oct. 13 at 11:59 PM, via Canvas
 (define (ledger-copy ledger)
   (build-vector (vector-length ledger)
                 (lambda (i) (account-copy (vector-ref ledger i)))))
+
+;;Self-Written Tests
+(check-expect
+ (begin
+   (define ledger (ledger-copy VEC-LEDGER))
+   (transfer! 2000 24 0 ledger)
+   (transfer! 2000 24 0 ledger)
+   ledger)
+ (vector (account 0 "Alan Turing" 20384)
+         ACCOUNT1
+         ACCOUNT2
+         (account 24 "David Parnas" -1952)
+         ACCOUNT4
+         ACCOUNT5))
+(check-error
+  (begin
+    (define ledger (ledger-copy VEC-LEDGER))
+    (transfer! 2000 100 200 ledger))
+  "Account not found")
+
+(check-expect
+   (equal?
+    (list-lookup 0 LIST-LEDGER)
+    (vec-lookup 0 VEC-LEDGER))
+   #t)
