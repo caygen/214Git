@@ -20,8 +20,9 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 
 ;; A WUGraph is [FILL IN YOUR REPRESENTATION HERE]
 (define-struct WUGraph [Vertex Edge Weight])
-(define-struct Vertex [])
-(define-struct Edge [])
+(define-struct Vertex [V])
+(define-struct Edge [V0 V1])
+(define-stuct weight [Egde value])
 
 ;;;
 ;;; GRAPH EXAMPLES
