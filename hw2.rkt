@@ -19,6 +19,7 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 ;; -- #false
 
 ;; A WUGraph is [FILL IN YOUR REPRESENTATION HERE]
+(define-struct WUGraph [Vertex Weight])
 
 
 ;;;
@@ -26,6 +27,7 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 ;;;
 
 ;; FILL THESE IN:
+;; either adjacency list or adjecency matrix
 (define GRAPH1 ...) ; 4-vertex graph from the assignment
 (define GRAPH2 ...) ; 6-vertex graph from the assignment
 
