@@ -19,10 +19,10 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 ;; -- #false
 
 ;; A WUGraph is [FILL IN YOUR REPRESENTATION HERE]
-(define-struct WUGraph [Vertex Edge Weight])
-(define-struct Vertex [V])
-(define-struct Edge [V0 V1])
-(define-stuct weight [Egde value])
+(define-struct WUGraph [vertex-list edge-list])
+(define-struct Edge (v1 v2 w))
+
+
 
 ;;;
 ;;; GRAPH EXAMPLES
@@ -30,8 +30,8 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 
 ;; FILL THESE IN:
 ;; either adjacency list or adjecency matrix
-(define GRAPH1 ...) ; 4-vertex graph from the assignment
-(define GRAPH2 ...) ; 6-vertex graph from the assignment
+(define GRAPH1 (0 1 2 3 4)((0 1 2)(1 2 3)(2 3 4)(3 0 5))) ; 4-vertex graph from the assignment
+(define GRAPH2 (0 1 2 3 4 5 6)((0 1 5)(1 2 1)(1 3 3)(2 4 2)(2 5 7)(3 4 4)(3 5 6))) ; 6-vertex graph from the assignment
 
 ;;;
 ;;; GRAPH OPERATIONS
