@@ -85,14 +85,19 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 ;; -- (cons Vertex [List-of Vertex])
 
 ;; get-adjacent : WUGraph Vertex -> [List-of Vertex]
-;; Returns a list of all vertices adjacent to vertex `i`. The order of
+;; Returns a list of all vertices adjacent to vertex `i`. The order of (cons curr adjacent-list)
+
+
 ;; the list is arbitrary.
 (define (get-adjacent graph i)
   (define adjacent-list '())
+  (define index -1)
   (for  ([curr (vector-ref (WUGraph-vertex-list graph) i)])
-    (if (not (false? curr)) (cons curr adjacent-list) (void)))
+    (begin
+      (set! index (+ index 1))
+      (if (not (false? curr)) (set! adjacent-list (append adjacent-list (list index))) (void))))
   adjacent-list)
-;; ^ YOUR CODE HERE
+;; DONE!!!
 
 ;;;
 ;;; DFS
