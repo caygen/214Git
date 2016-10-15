@@ -66,17 +66,19 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 ;; Returns the number of vertices in the graph. This should always be
 ;; the same as the parameter passed to `make-graph`.
 (define (graph-size graph)
-  ...)
-;; ^ YOUR CODE HERE
+  (vector-length (WUGraph-vertex-list graph)))
+;; DONE!!!
+
 
 ;; get-edge : WUGraph Vertex Vertex -> MaybeWeight
 ;; Gets the weight of the edge between vertices `i` or `j`; returns
 ;; #false if there is no such edge.
 (define (get-edge graph i j)
-  ...)
-;; ^ YOUR CODE HERE
+  (vector-ref (vector-ref (WUGraph-vertex-list graph) i) j))
+;; DONE!!!
 
 ;; The following function uses this data definition for its result:
+
 
 ;; A [List-of Vertex] is one of:
 ;; -- '()
@@ -86,7 +88,10 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 ;; Returns a list of all vertices adjacent to vertex `i`. The order of
 ;; the list is arbitrary.
 (define (get-adjacent graph i)
-  ...)
+  (define adjacent-list '())
+  (for  ([curr (vector-ref (WUGraph-vertex-list graph) i)])
+    (if (not (false? curr)) (cons curr adjacent-list) (void)))
+  adjacent-list)
 ;; ^ YOUR CODE HERE
 
 ;;;
