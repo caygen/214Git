@@ -19,8 +19,7 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 ;; -- #false
 
 ;; A WUGraph is [FILL IN YOUR REPRESENTATION HERE]
-(define-struct WUGraph [vertex-list edge-list])
-(define-struct Edge (v1 v2 w))
+(define-struct WUGraph [vertex-list])
 
 
 
@@ -30,9 +29,17 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 
 ;; FILL THESE IN:
 ;; either adjacency list or adjecency matrix
-(define GRAPH1 (0 1 2 3 4)((0 1 2)(1 2 3)(2 3 4)(3 0 5))) ; 4-vertex graph from the assignment
-(define GRAPH2 (0 1 2 3 4 5 6)((0 1 5)(1 2 1)(1 3 3)(2 4 2)(2 5 7)(3 4 4)(3 5 6))) ; 6-vertex graph from the assignment
-
+(define GRAPH1 (WUGraph (vector (vector #false 2 #false 5)
+                                (vector 2 #false 3 #false)
+                                (vector #false 3 #false 4)
+                                (vector 5 #false 4 #false))))
+                         
+(define GRAPH2 (WUGraph (vector (vector #false 5 #false #false #false #false)
+                                (vector 5 #false 1 3 #false #false)
+                                (vector #false 1 #false #false 2 7)
+                                (vector #false 3 #false #false 4 6)
+                                (vector #false #false 2 4 #false #false)
+                                (vector #false #false 7 6 #false #false))))
 ;;;
 ;;; GRAPH OPERATIONS
 ;;;
@@ -40,15 +47,20 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 ;; make-graph : Natural -> WUGraph
 ;; Creates a new graph with the specified number of vertices.
 (define (make-graph size)
-  ...)
-;; ^ YOUR CODE HERE
+  (WUGraph (build-vector size (lambda (x) (make-vector size #false)))))
+;; DONE!!!
 
 ;; set-edge! : WUGraph Vertex Vertex MaybeWeight -> Void
 ;; Sets the edge (i, j) to have weight `weight`, where `#false` means
-;; there is no edge between `i` and `j`.
+;;; there is no edge between `i` and `j`.
 (define (set-edge! graph i j weight)
-  ...)
-;; ^ YOUR CODE HERE
+  (begin
+    (vector-set! (vector-ref (WUGraph-vertex-list graph) i) j weight)
+    (vector-set! (vector-ref (WUGraph-vertex-list graph) j) i weight)))
+;  
+;    
+      
+;; DONE!!!
 
 ;; graph-size : WUGraph -> Natural
 ;; Returns the number of vertices in the graph. This should always be
@@ -144,24 +156,24 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 
 ;; build-graph : N [List-of (list Vertex Vertex Weight)] -> WUGraph
 ;; Returns a new graph of n vertices containing the given edges.
-(define (build-graph n edges)
-  (local [(define new-graph (make-graph n))]
-    (begin
-      (map (lambda (edge)
-             (set-edge! new-graph (first edge) (second edge) (third edge)))
-           edges)
-      new-graph)))
+;(define (build-graph n edges)
+;  (local [(define new-graph (make-graph n))]
+;    (begin
+;      (map (lambda (edge)
+;             (set-edge! new-graph (first edge) (second edge) (third edge)))
+;           edges)
+;      new-graph)))
 
 ;; Here's an example using build-graph to create a graph:
-(define GRAPH3
-  (build-graph 6
-               '((0 1 5)
-                 (0 2 7)
-                 (0 3 2)
-                 (1 4 9)
-                 (1 5 6)
-                 (3 5 0)
-                 (3 4 1))))
+;(define GRAPH3
+;  (build-graph 6
+;               '((0 1 5)
+;                 (0 2 7)
+;                 (0 3 2)
+;                 (1 4 9)
+;                 (1 5 6)
+;                 (3 5 0)
+;                 (3 4 1))))
 
 ;; DFS returns the list of nodes visited, but not in any particular
 ;; order, which makes it difficult to test. One way to test it is to
