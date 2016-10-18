@@ -113,8 +113,10 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
      (begin
             (set! visited-list (append visited-list (list curr)))
             (for  ([i (get-adjacent graph curr)])
-              (if (not(member i visited-list))(loop i)(void)))))
-   visited-list))
+              (if (not(member i visited-list))(loop i)(void)))
+            ;;(display visited-list)(newline)(display start)(newline)(newline) ;;debugging
+            )
+   visited-list)))
 
     
 ;  
@@ -153,7 +155,19 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
   '(0 1 2 3))
 
 (check-expect
+  (sort (dfs GRAPH1 2))
+  '(0 1 2 3))
+
+(check-expect
   (sort (dfs GRAPH2 0))
+  '(0 1 2 3 4 5))
+
+(check-expect
+  (sort (dfs GRAPH2 3))
+  '(0 1 2 3 4 5))
+
+(check-expect
+  (sort (dfs GRAPH2 5))
   '(0 1 2 3 4 5))
 
 (check-expect
