@@ -107,17 +107,23 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 ;; Performs a depth-first search starting at `start` and returns a
 ;; list of all reachable vertices.
 (define (dfs graph start)
-  ...)
-;; ^ YOUR CODE HERE
-
-;;;
+  (define visited-list '())
+  (set! visited-list (append visited-list (list start)))
+  (for  ([curr (get-adjacent graph start)])
+    (if (not(member curr visited-list))(dfs graph curr)(void)))
+  visited-list)
+      
+  
+  
+;  
+;;;;
 ;;; TESTING
 ;;;
 
 ;; You should test your code thoroughly. Here are some tests to get you
 ;; started, which you should uncomment when ready:
 
-#|
+
 (check-expect (graph-size GRAPH1) 4)
 (check-expect (graph-size GRAPH2) 6)
 
@@ -125,9 +131,9 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 (check-expect (get-edge GRAPH1 0 2) #false)
 
 (check-expect (get-adjacent GRAPH1 0)
-              (list 3 1))
+              (list 1 3))
 (check-expect (get-adjacent GRAPH2 3)
-              (list 5 4 1))
+              (list 1 4 5))
 
 (check-expect
   (begin
@@ -154,7 +160,7 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
     (set-edge! graph 0 2 10)
     (sort (dfs graph 0)))
   '(0 2))
-|#
+
 
 ;;;
 ;;; TESTING HELPERS
