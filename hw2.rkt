@@ -108,13 +108,15 @@ Due: Thursday, Oct. 27 at 11:59 PM, via Canvas
 ;; list of all reachable vertices.
 (define (dfs graph start)
   (define visited-list '())
-  (set! visited-list (append visited-list (list start)))
-  (for  ([curr (get-adjacent graph start)])
-    (if (not(member curr visited-list))(dfs graph curr)(void)))
-  visited-list)
-      
-  
-  
+  (unless (equal? (graph-size graph)(length visited-list))
+  (let loop((curr start))
+     (begin
+            (set! visited-list (append visited-list (list curr)))
+            (for  ([i (get-adjacent graph curr)])
+              (if (not(member i visited-list))(loop i)(void)))))
+   visited-list))
+
+    
 ;  
 ;;;;
 ;;; TESTING
