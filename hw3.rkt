@@ -37,7 +37,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; Adds an element to a heap.
 ; Error if the heap has reached capacity and cannot grow further.
 (define (insert! heap new-element)
-  (if (ensure-size! heap)
+  (if (ensure-size! heap)(void)
       (begin
         (hset! heap (heap-size heap) new-element)
         (bubble-up! heap (heap-size heap))
