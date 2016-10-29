@@ -37,25 +37,27 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; Adds an element to a heap.
 ; Error if the heap has reached capacity and cannot grow further.
 (define (insert! heap new-element)
-  (if (ensure-size! heap)(void)
-      (begin
+  (if (ensure-size! heap) (begin
         (hset! heap (heap-size heap) new-element)
         (bubble-up! heap (heap-size heap))
-        (set-heap-size! heap (+ (heap-size heap) 1)))))
+        (set-heap-size! heap (+ (heap-size heap) 1)))(void)))
 ;;;; my function is 7 lines (but see helpers below) ;;;;
 
 ; find-min : [Heap-of X] -> X
 ; Returns the least element in the heap.
 ; Error if the heap is empty.
 (define (find-min heap)
-  ...)
+  (if (= (heap-size heap) 0)
+      (error "Heap empty")
+      (href heap 0)))
 ;;;; my function is 4 lines ;;;;
 
 ; remove-min! : [Heap-of X] -> Void
 ; Removes the least element in the heap.
 ; Error if the heap is empty.
 (define (remove-min! heap)
-  ...)
+  (...))
+   
 ;;;; my function is 9 lines (but see helpers below) ;;;;
 
 
@@ -80,7 +82,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; Ensures that the heap has room for `size` elements by throwing an error
 ; if it doesn't.
 (define (ensure-size! h)
-  (if (> (vector-length (heap-data h)) (heap-size h)) (#t) (error "Capacity full"))) 
+  (if (> (vector-length (heap-data h)) (heap-size h)) #t (error "Capacity full"))) 
 ;;;; my function is 3 lines ;;;;
 
 ; heap:percolate-down! : [Heap-of X] N -> Void
@@ -91,18 +93,25 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; heap:find-smaller-child : [Heap-of X] N -> [Maybe N]
 ; Finds the index of the smaller child of node `index`, or `#false` if
 ; it has no children.
+(define (find-smaller-child h i)
+  (if (>= (left i)(heap-size h))
+      (#false)
+      (if (and (< (right i)(heap-size h)) (<= (href h (right i))(href h (left i))))
+          (right i)
+          (left i))))
 ;;;; my function is 9 lines ;;;;
 
 ;; DONE
 ; heap:bubble-up! : [Heap-of X] N -> Void
 ; Restores the heap invariant by bubbling up the element at `index`.
 (define (bubble-up! h i)
-  (if (hlt? h (parent i) i)
-      (void)
-      (begin
-        (swap! i (parent i))
-        (bubble-up! h (parent i)))))
-
+  (cond
+    ((= i 0) (void))
+    ((hlt? h (parent i) i) (void))
+    (else
+     (begin
+        (swap! h i (parent i))
+        (bubble-up! h (parent i))))))
 ;;;; my function is 6 lines ;;;;
 
 ;; DONE
@@ -134,7 +143,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; Returns whether the element at `i` is less than the element at `j`
 ; using the heap's order.
 (define (hlt? h i j)
-  ((heap-lt? h) i j))
+  ((heap-lt? h) (href h i) (href h j)))
 ;;;; my function is 2 lines ;;;;
 
 ;; DONE
@@ -157,3 +166,17 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 (define (parent i)
   (floor (/ (- i 1) 2)))
 ;;;; my function is 2 lines ;;;;
+
+;;example heap
+(define hex (create 11 <))
+(insert! hex 0)
+(insert! hex 2)
+(insert! hex 4)
+(insert! hex 6)
+(insert! hex 8)
+(insert! hex 10)
+(insert! hex 12)
+(insert! hex 14)
+(insert! hex 16)
+(insert! hex 18)
+(insert! hex 17)
