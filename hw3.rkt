@@ -56,7 +56,15 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; Removes the least element in the heap.
 ; Error if the heap is empty.
 (define (remove-min! heap)
-  (...))
+  (cond
+    ( (= (heap-size heap) 0) (error "Heap empty" ))
+    (else(begin
+     (define ret (href heap 0))
+     (hset! heap 0 (href heap (- (heap-size heap) 2)))
+     (percolate-down! heap 0)
+     (hset! heap (- (heap-size heap) 2) #false)
+     ))))
+    
    
 ;;;; my function is 9 lines (but see helpers below) ;;;;
 
@@ -90,7 +98,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; at `index`.
 (define (percolate-down! h i)
   (define schildind (find-smaller-child h i))
-  (if (not  (equal? schildind ))
+  (if (not  (equal? schildind #f))
       (if (> (href h i) (href h schildind))
           (begin
             (bubble-up! h schildind)
@@ -104,7 +112,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; it has no children.
 (define (find-smaller-child h i)
   (if (>= (left i)(heap-size h))
-      (display #false)
+      (equal? 1 0)
       (if (and (< (right i)(heap-size h)) (<= (href h (right i))(href h (left i))))
           (right i)
           (left i))))
@@ -189,4 +197,4 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 (insert! hex 16)
 (insert! hex 18)
 (insert! hex 17)
-(define hez (heap 11 <  (vector 0 25 4 6 8 10 12 14 16 18)))
+(define hez (heap 11 <  (vector 0 2 4 6 8 10 12 14 16 18)))
