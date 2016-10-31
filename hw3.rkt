@@ -88,6 +88,15 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; heap:percolate-down! : [Heap-of X] N -> Void
 ; Restores the heap invariant by percolating down, starting with the element
 ; at `index`.
+(define (percolate-down! h i)
+  (define schildind (find-smaller-child h i))
+  (if (not  (equal? schildind ))
+      (if (> (href h i) (href h schildind))
+          (begin
+            (bubble-up! h schildind)
+            (percolate-down! h schildind))
+          (void))
+      (void)))
 ;;;; my function is 8 lines ;;;;
 
 ; heap:find-smaller-child : [Heap-of X] N -> [Maybe N]
@@ -95,7 +104,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; it has no children.
 (define (find-smaller-child h i)
   (if (>= (left i)(heap-size h))
-      (#false)
+      (display #false)
       (if (and (< (right i)(heap-size h)) (<= (href h (right i))(href h (left i))))
           (right i)
           (left i))))
@@ -180,3 +189,4 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 (insert! hex 16)
 (insert! hex 18)
 (insert! hex 17)
+(define hez (heap 11 <  (vector 0 25 4 6 8 10 12 14 16 18)))
