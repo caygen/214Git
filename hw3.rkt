@@ -37,10 +37,12 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; Adds an element to a heap.
 ; Error if the heap has reached capacity and cannot grow further.
 (define (insert! heap new-element)
-  (if (ensure-size! heap) (begin
-        (hset! heap (heap-size heap) new-element)
-        (bubble-up! heap (heap-size heap))
-        (set-heap-size! heap (+ (heap-size heap) 1)))(void)))
+  (begin
+    (set-heap-data! heap (heap-data (ensure-size! heap)))
+    (hset! heap (heap-size heap) new-element)
+    (bubble-up! heap (heap-size heap))
+    (set-heap-size! heap (+ (heap-size heap) 1))
+    ))
 ;;;; my function is 7 lines (but see helpers below) ;;;;
 
 ; find-min : [Heap-of X] -> X
@@ -57,15 +59,15 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; Error if the heap is empty.
 (define (remove-min! heap)
   (cond
-    ( (= (heap-size heap) 0) (error "Heap empty" ))
-    (else(begin
-     (define ret (href heap 0))
-     (hset! heap 0 (href heap (- (heap-size heap) 2)))
-     (percolate-down! heap 0)
-     (hset! heap (- (heap-size heap) 2) #false)
-     ))))
-    
-   
+    ((= (heap-size heap) 0) (error "Heap empty" ))
+    (else (begin
+           (define ret (href heap 0))
+           (hset! heap 0 (href heap (- (heap-size heap) 2)))
+           (percolate-down! heap 0)
+           (hset! heap (- (heap-size heap) 2) #false)
+           ))))
+
+
 ;;;; my function is 9 lines (but see helpers below) ;;;;
 
 
@@ -89,8 +91,19 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; heap:ensure-size! : [Heap-of X] N -> Void
 ; Ensures that the heap has room for `size` elements by throwing an error
 ; if it doesn't.
+;(define (ensure-size! h)
+;  (if (> (vector-length (heap-data h)) (heap-size h)) #t (error "Capacity full")))
+
 (define (ensure-size! h)
-  (if (> (vector-length (heap-data h)) (heap-size h)) #t (error "Capacity full"))) 
+  (if (> (vector-length (heap-data h)) (heap-size h))
+      h
+      (begin
+          (define new (create (* 2 (heap-size h)) (heap-lt? h)))
+          (set-heap-size! new (heap-size h))
+          (let copy ([i 0])
+            (if (>= i (heap-size h)) new (begin
+                                           (hset! new i (href h i))
+                                           (copy (+ 1 i))))))))
 ;;;; my function is 3 lines ;;;;
 
 ; heap:percolate-down! : [Heap-of X] N -> Void
@@ -127,8 +140,8 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
     ((hlt? h (parent i) i) (void))
     (else
      (begin
-        (swap! h i (parent i))
-        (bubble-up! h (parent i))))))
+       (swap! h i (parent i))
+       (bubble-up! h (parent i))))))
 ;;;; my function is 6 lines ;;;;
 
 ;; DONE
@@ -185,7 +198,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ;;;; my function is 2 lines ;;;;
 
 ;;example heap
-(define hex (create 11 <))
+(define hex (create 10 <))
 (insert! hex 0)
 (insert! hex 2)
 (insert! hex 4)
@@ -196,5 +209,13 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 (insert! hex 14)
 (insert! hex 16)
 (insert! hex 18)
-(insert! hex 17)
-(define hez (heap 11 <  (vector 0 2 4 6 8 10 12 14 16 18)))
+(insert! hex 19)
+
+(define hev (create 10 <))
+(insert! hev 0)
+(insert! hev 2)
+(insert! hev 4)
+(insert! hev 6)
+(insert! hev 8)
+(insert! hev 10)
+
