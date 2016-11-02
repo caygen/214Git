@@ -287,3 +287,9 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
               (vector 2 20 54 #f #f))
 ;;check percolate-down! ==== X
 ;;check extra credit    ==== X
+(check-expect (begin (define h3 (create 2 <))
+                     (insert! h3 3)
+                     (insert! h3 5)
+                     (insert! h3 0)
+                     (heap-data h3))
+              (vector 0 5 3 #f))
