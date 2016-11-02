@@ -197,7 +197,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
   (floor (/ (- i 1) 2)))
 ;;;; my function is 2 lines ;;;;
 
-;;example heaps
+;;example heaps for command line manipulation
 (define hex (create 12 <))
 (insert! hex 0)
 (insert! hex 2)
@@ -221,6 +221,8 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 
 
 (define hez (heap 10 <  (vector 0 2 6 8 18 12 14 16 10 #f)))
+
+
 ;;;;;;;;Check-Expects;;;;;;;;
 ;;check create capacity ==== PASS
 (check-expect (begin
@@ -295,18 +297,25 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
                 (vector (heap-data h2) (heap-size h2)))
               (vector (vector 2 20 54 #f #f) 4))
 ;;check percolate-down! ==== X
-#|
 (check-expect (begin
-                (define h4 (create 5 <))
-                (set-heap-data! h4 (vector 10 3 0 4 #f))
-                (newline)
-                (display "-----")(display h4)(display "-----")
-                (newline)
-                (percolate-down! h4 0)
-                (display "-----")(display h4)(display "-----")
-                h4)
-              (vector 2 3 4))
-|#
+                (define h4 (create 7 <))
+                (set-heap-data! h4 (vector 10 3 16 4 15 0 1))
+                (set-heap-size! h4 4)
+                ;;       10
+                ;;      /  \
+                ;;     /    \
+                ;;    3     16
+                ;;   / \    / \
+                ;;  4   15 0   1
+                ;; if we percolate-down! 10 it should become
+                ;;      3
+                ;;     / \
+                ;;    /   \
+                ;;   4     16
+                ;;  / \    / \
+                ;; 10  15 0   1
+                (heap-data h4))
+              (vector 3 4 16 10 15 0 1))
 ;;check extra credit    ==== PASS
 (check-expect (begin (define h3 (create 2 <))
                      (insert! h3 3)
