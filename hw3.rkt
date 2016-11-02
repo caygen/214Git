@@ -296,7 +296,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
                 (remove-min! h2)
                 (vector (heap-data h2) (heap-size h2)))
               (vector (vector 2 20 54 #f #f) 4))
-;;check percolate-down! ==== X
+;;check percolate-down! ==== PASS
 (check-expect (begin
                 (define h4 (create 7 <))
                 (set-heap-data! h4 (vector 10 3 16 4 15 0 1))
