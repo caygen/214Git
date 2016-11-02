@@ -223,13 +223,13 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 (define hez (heap 10 <  (vector 0 2 6 8 18 12 14 16 10 #f)))
 ;;;;;;;;Check-Expects;;;;;;;;
 ;;check create capacity ==== PASS
-(define h1 (create 5 <))
-(check-expect (heap-data h1)
-              (vector #f #f #f #f #f))
-(check-expect (heap-size h1)
-              0)
+(check-expect (begin
+                (define h1 (create 5 <))
+                (vector (heap-data h1) (heap-size h1)))
+              (vector (vector #f #f #f #f #f) 0))
 ;;check insert!         ==== PASS
 (check-expect (begin
+                (define h1 (create 5 <))
                 (insert! h1 20)
                 ;; 20
                 ;;{20}
@@ -269,13 +269,14 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
               (vector 3 5 40 30 20))
 ;;check find-min        ==== PASS
 (check-expect (begin
+                (define h1 (create 5 <))
                 (insert! h1 20)
                 (insert! h1 1)
                 (insert! h1 2)
                 (insert! h1 54)
                 (find-min h1))
               1)
-;;check remove-min!      ==== FAIL
+;;check remove-min!      ==== PASS
 (check-expect (begin
                 (define h2 (create 5 <))
                 (insert! h2 20)
@@ -283,14 +284,21 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
                 (insert! h2 2)
                 (insert! h2 54)
                 (remove-min! h2)
-                (heap-data h2))
-              (vector 2 20 54 #f #f))
+                (vector (heap-data h2) (heap-size h2)))
+              (vector (vector 2 20 54 #f #f) 4))
 ;;check percolate-down! ==== X
 #|
 (check-expect (begin
-...)
+                (define h4 (create 5 <))
+                (set-heap-data! h4 (vector 10 3 0 4 #f))
+                (newline)
+                (display "-----")(display h4)(display "-----")
+                (newline)
+                (percolate-down! h4 0)
+                (display "-----")(display h4)(display "-----")
+                h4)
+              (vector 2 3 4))
 |#
-
 ;;check extra credit    ==== PASS
 (check-expect (begin (define h3 (create 2 <))
                      (insert! h3 3)
