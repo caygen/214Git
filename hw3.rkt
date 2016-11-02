@@ -220,7 +220,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 (insert! hev 10)
 
 
-(define hez (heap 10 <  (vector 0 2 4 6 8 10 12 14 16 18)))
+(define hez (heap 10 <  (vector 0 2 6 8 18 12 14 16 10 #f)))
 ;;;;;;;;Check-Expects;;;;;;;;
 ;;check create capacity ==== PASS
 (define h1 (create 5 <))
@@ -275,7 +275,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
                 (insert! h1 54)
                 (find-min h1))
               1)
-;;check remove-min!      ==== X
+;;check remove-min!      ==== FAIL
 (check-expect (begin
                 (define h2 (create 5 <))
                 (insert! h2 20)
@@ -286,7 +286,12 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
                 (heap-data h2))
               (vector 2 20 54 #f #f))
 ;;check percolate-down! ==== X
-;;check extra credit    ==== X
+#|
+(check-expect (begin
+...)
+|#
+
+;;check extra credit    ==== PASS
 (check-expect (begin (define h3 (create 2 <))
                      (insert! h3 3)
                      (insert! h3 5)
