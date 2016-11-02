@@ -198,7 +198,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ;;;; my function is 2 lines ;;;;
 
 ;;example heap
-(define hex (create 10 <))
+(define hex (create 12 <))
 (insert! hex 0)
 (insert! hex 2)
 (insert! hex 4)
@@ -219,3 +219,71 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 (insert! hev 8)
 (insert! hev 10)
 
+
+(define hez (heap 10 <  (vector 0 2 4 6 8 10 12 14 16 18)))
+;;;;;;;;Check-Expects;;;;;;;;
+;;check create capacity ==== PASS
+(define h1 (create 5 <))
+(check-expect (heap-data h1)
+              (vector #f #f #f #f #f))
+(check-expect (heap-size h1)
+              0)
+;;check insert!         ==== PASS
+(check-expect (begin
+                (insert! h1 20)
+                ;; 20
+                ;;{20}
+                (insert! h1 30)
+                ;;  20
+                ;; /
+                ;;30
+                ;;{20,30}
+                (insert! h1 40)
+                ;;  20
+                ;; /  \
+                ;;30   40
+                ;;{20,30,40}
+                (insert! h1 5)
+                ;;    20
+                ;;   /  \
+                ;;  30  40
+                ;; /
+                ;;5
+                ;;{20,30,40,5}
+                ;;becomes
+                ;;    5
+                ;;   / \
+                ;;  20 40
+                ;; /
+                ;;30
+                ;;{5,20,40,30}
+                (insert! h1 3)
+                ;;just like above it becomes
+                ;;    3
+                ;;   / \
+                ;;  5   40
+                ;; / \
+                ;;30  20
+                ;;{3,5,40,30,20}
+                (heap-data h1))
+              (vector 3 5 40 30 20))
+;;check find-min        ==== PASS
+(check-expect (begin
+                (insert! h1 20)
+                (insert! h1 1)
+                (insert! h1 2)
+                (insert! h1 54)
+                (find-min h1))
+              1)
+;;check remove-min!      ==== X
+(check-expect (begin
+                (define h2 (create 5 <))
+                (insert! h2 20)
+                (insert! h2 1)
+                (insert! h2 2)
+                (insert! h2 54)
+                (remove-min! h2)
+                (heap-data h2))
+              (vector 2 20 54 #f #f))
+;;check percolate-down! ==== X
+;;check extra credit    ==== X
