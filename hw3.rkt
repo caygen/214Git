@@ -197,7 +197,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
   (floor (/ (- i 1) 2)))
 ;;;; my function is 2 lines ;;;;
 
-;;example heap
+;;example heaps
 (define hex (create 12 <))
 (insert! hex 0)
 (insert! hex 2)
@@ -276,6 +276,14 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
                 (insert! h1 54)
                 (find-min h1))
               1)
+(check-expect (begin
+                (define h1 (create 5 <))
+                (insert! h1 -20)
+                (insert! h1 1)
+                (insert! h1 2)
+                (insert! h1 -54)
+                (find-min h1))
+              -54)
 ;;check remove-min!      ==== PASS
 (check-expect (begin
                 (define h2 (create 5 <))
