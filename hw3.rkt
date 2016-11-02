@@ -300,7 +300,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 (check-expect (begin
                 (define h4 (create 7 <))
                 (set-heap-data! h4 (vector 10 3 16 4 15 0 1))
-                (set-heap-size! h4 4)
+                (set-heap-size! h4 7)
                 ;;       10
                 ;;      /  \
                 ;;     /    \
@@ -308,12 +308,13 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
                 ;;   / \    / \
                 ;;  4   15 0   1
                 ;; if we percolate-down! 10 it should become
-                ;;      3
-                ;;     / \
-                ;;    /   \
-                ;;   4     16
-                ;;  / \    / \
-                ;; 10  15 0   1
+                ;;       3
+                ;;      / \
+                ;;     /   \
+                ;;    4     16
+                ;;   / \    / \
+                ;;  10  15 0   1
+                (percolate-down! h4 0)
                 (heap-data h4))
               (vector 3 4 16 10 15 0 1))
 ;;check extra credit    ==== PASS
