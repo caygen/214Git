@@ -36,6 +36,8 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; insert! : [Heap-of X] X -> Void
 ; Adds an element to a heap.
 ; Error if the heap has reached capacity and cannot grow further.
+
+;;time complexity == O(log n) b/c of bubble-up!
 (define (insert! heap new-element)
   (begin
     (set-heap-data! heap (heap-data (ensure-size! heap)))
@@ -48,6 +50,8 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; find-min : [Heap-of X] -> X
 ; Returns the least element in the heap.
 ; Error if the heap is empty.
+
+;;time complexity == O(1) b/c check for error & take the 0th element 
 (define (find-min heap)
   (if (= (heap-size heap) 0)
       (error "Heap empty")
@@ -57,6 +61,8 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; remove-min! : [Heap-of X] -> Void
 ; Removes the least element in the heap.
 ; Error if the heap is empty.
+
+;;time complexity == O(log n) b/c pecolate-down! uses bubble-up!
 (define (remove-min! heap)
   (cond
     ((= (heap-size heap) 0) (error "Heap empty" ))
@@ -66,8 +72,6 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
            (hset! heap (- (heap-size heap) 1) #false)
            (percolate-down! heap 0)
            ))))
-
-
 ;;;; my function is 9 lines (but see helpers below) ;;;;
 
 
@@ -324,3 +328,4 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
                      (insert! h3 0)
                      (heap-data h3))
               (vector 0 5 3 #f))
+;;obviously bubble-up!, right, left and find-smaller-child also work since insert! works
