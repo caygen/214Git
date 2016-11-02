@@ -62,7 +62,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; Removes the least element in the heap.
 ; Error if the heap is empty.
 
-;;time complexity == O(log n) b/c pecolate-down! uses bubble-up!
+;;time complexity == O(log n) b/c percolate-down! uses bubble-up!
 (define (remove-min! heap)
   (cond
     ((= (heap-size heap) 0) (error "Heap empty" ))
@@ -113,6 +113,8 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; heap:percolate-down! : [Heap-of X] N -> Void
 ; Restores the heap invariant by percolating down, starting with the element
 ; at `index`.
+
+;;time complexity == O(log n) b/c bubble-up!
 (define (percolate-down! h i)
   (define schildind (find-smaller-child h i))
   (if (not  (equal? schildind #f))
@@ -127,6 +129,8 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ; heap:find-smaller-child : [Heap-of X] N -> [Maybe N]
 ; Finds the index of the smaller child of node `index`, or `#false` if
 ; it has no children.
+
+;;time complexity == O(1) b/c no recursion or loop
 (define (find-smaller-child h i)
   (if (>= (left i)(heap-size h))
       (equal? 1 0)
@@ -138,6 +142,8 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ;; DONE
 ; heap:bubble-up! : [Heap-of X] N -> Void
 ; Restores the heap invariant by bubbling up the element at `index`.
+
+;;time complexity == O(log n) b/c recursive and the # of recursion = height of the tree, which is O(log n) b/c complete tree
 (define (bubble-up! h i)
   (cond
     ((= i 0) (void))
