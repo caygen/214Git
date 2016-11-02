@@ -62,9 +62,9 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
     ((= (heap-size heap) 0) (error "Heap empty" ))
     (else (begin
            (define ret (href heap 0))
-           (hset! heap 0 (href heap (- (heap-size heap) 2)))
+           (hset! heap 0 (href heap (- (heap-size heap)1)))
+           (hset! heap (- (heap-size heap) 1) #false)
            (percolate-down! heap 0)
-           (hset! heap (- (heap-size heap) 2) #false)
            ))))
 
 
