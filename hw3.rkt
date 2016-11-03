@@ -317,7 +317,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
                 ;;    3     16
                 ;;   / \    / \
                 ;;  4   15 0   1
-                ;; if we percolate-down! 10 it should become
+                ;; if we percolate-down!, 10 it should become
                 ;;       3
                 ;;      / \
                 ;;     /   \
@@ -338,9 +338,9 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 
 ;;String Test           ==== PASS
 (check-expect (begin (define hs (create 6 string<?))
-                     (insert! hs "c");;      c           b           b
-                     (insert! hs "u");;     / \         / \         / \
-                     (insert! hs "b");;    u   b^ =>   u   c  =>   s   c
-                     (insert! hs "s");;   /           /           /
-                     (heap-data hs));;   s           s           u
-              (vector "b" "s" "c" "u" #f #f))
+                     (insert! hs "c");;                              c           b           b
+                     (insert! hs "u");;                             / \         / \         / \
+                     (insert! hs "b");;                            u   b^ =>   u   c  =>   s   c
+                     (insert! hs "s");;                           /           /           /
+                     (vector (heap-data hs) (heap-size hs)));;   s          ^s           u
+              (vector (vector "b" "s" "c" "u" #f #f) 4))
