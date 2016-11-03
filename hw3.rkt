@@ -335,3 +335,12 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
                      (heap-data h3))
               (vector 0 5 3 #f))
 ;;obviously bubble-up!, right, left and find-smaller-child also work since insert! works
+
+;;String Test           ==== PASS
+(check-expect (begin (define hs (create 6 string<?))
+                     (insert! hs "c");;      c           b           b
+                     (insert! hs "u");;     / \         / \         / \
+                     (insert! hs "b");;    u   b^ =>   u   c  =>   s   c
+                     (insert! hs "s");;   /           /           /
+                     (heap-data hs));;   s           s           u
+              (vector "b" "s" "c" "u" #f #f))
