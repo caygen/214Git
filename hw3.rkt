@@ -1,3 +1,4 @@
+
 #lang dssl
 
 #|Cem Ozer && Can Aygen
@@ -208,7 +209,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 ;;;; my function is 2 lines ;;;;
 
 ;;example heaps for command line manipulation
-(define hex (create 12 <))
+(define hex (create 10 <))
 (insert! hex 0)
 (insert! hex 2)
 (insert! hex 4)
@@ -317,7 +318,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
                 ;;    3     16
                 ;;   / \    / \
                 ;;  4   15 0   1
-                ;; if we percolate-down!, 10 it should become
+                ;; if we percolate-down! 10, it should become
                 ;;       3
                 ;;      / \
                 ;;     /   \
