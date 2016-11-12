@@ -12,8 +12,6 @@ Due: Thursday, Nov. 17 at 11:59 PM, via Canvas
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A UnionFind is [YOUR DEFINITION HERE]
-(define-struct UnionFind [vertex-list])
-
 
 ; create : N -> UnionFind
 ; Creates a new union-find structure having `size` initially-disjoint
