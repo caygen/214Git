@@ -144,7 +144,7 @@ In tree form:
                       (UnionFindEntry 2 1) ;2
                       (UnionFindEntry 0 4) ;3
                       (UnionFindEntry 8 1) ;4
-                      (UnionFindEntry 0 3) ;5
+                      (UnionFindEntry 3 3) ;5
                       (UnionFindEntry 5 1) ;6
                       (UnionFindEntry 8 1) ;7
                       (UnionFindEntry 0 3) ;8
