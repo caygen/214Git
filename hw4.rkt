@@ -47,23 +47,19 @@ Due: Thursday, Nov. 17 at 11:59 PM, via Canvas
     (if (equal? i parent)
         (return i)
         (begin
-          (set-UnionFindEntry-id! (uf:get-entry uf i) (UnionFindEntry-id (uf:get-entry uf parent)))
+          (uf:reparent! (uf:get-entry uf obj)(uf:get-entry uf parent))
           (loop parent)))))
 ;;;; My function is 10 lines (using one helper) ;;;;
 
 ; union : UnionFind N N -> Void
 ; Unions the set containing `obj1` with the set containing `obj2`.
 (define (union! uf obj1 obj2)
-  (define root1 (find uf obj1))
-  (define root2 (find uf obj2))
+  (define root1 (uf:get-entry uf (find uf obj1)))
+  (define root2 (uf:get-entry uf (find uf obj2)))
   (if (not (equal? root1 root2))
-      (if (< (UnionFindEntry-size (uf:get-entry uf root1))(UnionFindEntry-size (uf:get-entry uf root2)))
-          (begin
-            (set-UnionFindEntry-id! (uf:get-entry uf root2) root1)
-            (set-UnionFindEntry-size!  (uf:get-entry uf root1) (+ (UnionFindEntry-size (uf:get-entry uf root1)) (UnionFindEntry-size (uf:get-entry uf root2)))))
-          (begin
-            (set-UnionFindEntry-id! (uf:get-entry uf root1) root2)
-            (set-UnionFindEntry-size!  (uf:get-entry uf root2) (+ (UnionFindEntry-size (uf:get-entry uf root1)) (UnionFindEntry-size (uf:get-entry uf root2))))))
+      (if (< (UnionFindEntry-size root1) (UnionFindEntry-size root2))
+          (uf:reparent! root2 root1)
+          (uf:reparent! root1 root2))
       (void)))
           
 ;;;; My function is 12 lines (using two helpers) ;;;;
@@ -79,7 +75,10 @@ Due: Thursday, Nov. 17 at 11:59 PM, via Canvas
 ; uf:reparent! : UnionFindEntry UnionFindEntry -> Void
 ; Sets the parent of `child` to be `parent` and adjusts `parent`’s
 ; weight accordingly.
- (define (uf:reparent! child parent)...)
+ (define (uf:reparent! child parent)
+   (set-UnionFindEntry-id! child (UnionFindEntry-id parent))
+   (set-UnionFindEntry-size! parent (+ (UnionFindEntry-size child) 1)))
+   
    
 ;;; My function is 5 lines ;;;;
 
