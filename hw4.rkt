@@ -247,6 +247,66 @@ In tree form:
 ;;;;; PART II: KRUSKAL’S MST ALGORITHM ;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; A WUGraph is an adjecency matrix
+(define-struct WUGraph [vertex-list])
+
+;; make-graph : Natural -> WUGraph
+;; Creates a new graph with the specified number of vertices.
+(define (make-graph size)
+  (WUGraph (build-vector size (lambda (x) (make-vector size #false)))))
+
+;; set-edge! : WUGraph Vertex Vertex MaybeWeight -> Void
+;; Sets the edge (i, j) to have weight `weight`, where `#false` means
+;;; there is no edge between `i` and `j`.
+(define (set-edge! graph i j weight)
+  (begin
+    (vector-set! (vector-ref (WUGraph-vertex-list graph) i) j weight)
+    (vector-set! (vector-ref (WUGraph-vertex-list graph) j) i weight)))
+
+;; graph-size : WUGraph -> Natural
+;; Returns the number of vertices in the graph. This should always be
+;; the same as the parameter passed to `make-graph`.
+(define (graph-size graph)
+  (vector-length (WUGraph-vertex-list graph)))
+
+;; get-edge : WUGraph Vertex Vertex -> MaybeWeight
+;; Gets the weight of the edge between vertices `i` or `j`; returns
+;; #false if there is no such edge.
+(define (get-edge graph i j)
+  (vector-ref (vector-ref (WUGraph-vertex-list graph) i) j))
+
+;; A [List-of Vertex] is one of:
+;; -- '()
+;; -- (cons Vertex [List-of Vertex])
+;; get-adjacent : WUGraph Vertex -> [List-of Vertex]
+;; Returns a list of all vertices adjacent to vertex `i`. The order of (cons curr adjacent-list)
+(define (get-adjacent graph i)
+  (define adjacent-list '())
+  (define index -1)
+  (for  ([curr (vector-ref (WUGraph-vertex-list graph) i)])
+    (begin
+      (set! index (+ index 1))
+      (if (not (false? curr)) (set! adjacent-list (append adjacent-list (list index))) (void))))
+  adjacent-list)
+
+;; DFS
+;; WUGraph Vertex -> [List-of Vertex]
+;; Performs a depth-first search starting at `start` and returns a
+;; list of all reachable vertices.
+(define (dfs graph start)
+  (define visited-list '())
+  (unless (equal? (graph-size graph)(length visited-list))
+  (let loop((curr start))
+     (begin
+            (set! visited-list (append visited-list (list curr)))
+            (for  ([i (get-adjacent graph curr)])
+              (if (not(member i visited-list))(loop i)(void))))
+   visited-list)))
+
+; ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+; --------------------------------------------------------------------------------------
+
+
 ;; kruskal-mst : WUGraph -> WUGraph
 ;; Returns the minimum spanning forest for a given graph, represented as
 ;; another graph.
@@ -262,15 +322,38 @@ In tree form:
 ;; get-all-edges/increasing : WUGraph -> [List-of (list Vertex Vertex)]
 ;; Gets a list of all the edges in the graph sorted by increasing weight;
 ;; includes only one (arbitrary) direction for each edge.
-(define (get-all-edges/increasing g)
-  ...)
+(define (get-all-edges/increasing g)...)
 ;;;; my function is 4 lines ;;;;
 
 ;; get-all-edges : WUGraph -> [List-of (list Vertex Vertex)]
 ;; Gets all the edges in a graph as a list of 2-element lists; includes
 ;; only one (arbitrary) direction for each edge.
 (define (get-all-edges g)
-  ...)
+  (define edgelist '())
+  (define n (graph-size g))
+  (define j 0)
+  (define i 0)
+  (while (not(equal? j (- n 1)))
+    (begin
+      (set! i (+ j 1))
+      (while (not (equal? i n))
+         (begin
+           (if (not (equal? (get-edge g j i) #f))
+               (set! edgelist (append edgelist (list(list i j))))
+               (void))
+           (set! i (add1 i)))))
+       (set! j (add1 j)))
+  (return edgelist))
+    
+
+(define GRAPH2 (WUGraph (vector (vector #false 5 #false #false #false #false)
+                                (vector 5 #false 1 3 #false #false)
+                                (vector #false 1 #false #false 2 7)
+                                (vector #false 3 #false #false 4 6)
+                                (vector #false #false 2 4 #false #false)
+                                (vector #false #false 7 6 #false #false))))
+  (get-all-edges GRAPH2)
+    
 ;;;; my function is 13 lines ;;;;
 
 ;; heap-sort : [Ord X] [List-of X] -> [List-of X]
