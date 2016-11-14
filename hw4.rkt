@@ -135,11 +135,11 @@ In tree form:
                        (UnionFindEntry 8 1)
                        (UnionFindEntry 9 1))
                (UnionFindEntry 2 1)))
-
+#|
 (check-expect (vector (find un 1) (find un 2) un)
               (vector
                0 2
-              (vector (UnionFindEntry 0 9) ;0
+              (vector (UnionFindEntry 0 10) ;0
                       (UnionFindEntry 0 1) ;1
                       (UnionFindEntry 2 1) ;2
                       (UnionFindEntry 0 4) ;3
@@ -158,6 +158,7 @@ In tree form:
       5 7   4
      / \
     9   6
+|#
 |#
 (define ex (create 5))                       ; 0 1 2 3 4
 
