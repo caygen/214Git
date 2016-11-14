@@ -151,7 +151,7 @@ In tree form:
                       (UnionFindEntry 5 1));9
               ))
 #|result should look like:
-          0
+          0         2
          /|\
         3 8 1
        / / \
