@@ -94,6 +94,83 @@ Due: Thursday, Nov. 17 at 11:59 PM, via Canvas
 ;;;
 ;;; UNION-FIND TESTING
 ;;;
+;;check create
+;;example UnionFind
+#|
+Un=
+0 1 2 3 4 5 6 7 8 9
+0 8 2 0 8 3 5 8 0 5
+
+In tree form:
+      0      2
+     / \
+    3   8
+   /   /|\
+  5   1 7 4
+ / \
+9   6
+
+|#
+(define un (vector (UnionFindEntry 0 8) ;0
+                   (UnionFindEntry 8 1) ;1
+                   (UnionFindEntry 2 1) ;2
+                   (UnionFindEntry 0 4) ;3
+                   (UnionFindEntry 8 1) ;4
+                   (UnionFindEntry 3 3) ;5
+                   (UnionFindEntry 5 1) ;6
+                   (UnionFindEntry 8 1) ;7
+                   (UnionFindEntry 0 4) ;8
+                   (UnionFindEntry 5 1));9
+  )
+                   
+(check-expect (vector (create 10) (uf:get-entry (create 5) 2))
+              (vector
+               (vector (UnionFindEntry 0 1)
+                       (UnionFindEntry 1 1)
+                       (UnionFindEntry 2 1)
+                       (UnionFindEntry 3 1)
+                       (UnionFindEntry 4 1)
+                       (UnionFindEntry 5 1)
+                       (UnionFindEntry 6 1)
+                       (UnionFindEntry 7 1)
+                       (UnionFindEntry 8 1)
+                       (UnionFindEntry 9 1))
+               (UnionFindEntry 2 1)))
+
+(check-expect (vector (find un 1) (find un 9) (find un 2) un)
+              (vector
+               0 0 2
+              (vector (UnionFindEntry 0 8) ;0
+                      (UnionFindEntry 0 1) ;1
+                      (UnionFindEntry 2 1) ;2
+                      (UnionFindEntry 0 2) ;3
+                      (UnionFindEntry 8 1) ;4
+                      (UnionFindEntry 0 2) ;5
+                      (UnionFindEntry 5 1) ;6
+                      (UnionFindEntry 8 1) ;7
+                      (UnionFindEntry 0 3) ;8
+                      (UnionFindEntry 3 1));9
+              ))
+(define ex (create 5))                       ; 0 1 2 3 4
+
+(check-expect  (begin (union! ex 0 1)        ; 1 1 2 3 4
+                      (union! ex 4 2)        ; 1 1 2 3 2
+                      (union! ex 1 2)       ; 1 2 2 3 2
+                      ex)
+              (vector (UnionFindEntry 1 1) ;0
+                      (UnionFindEntry 2 2) ;1
+                      (UnionFindEntry 2 4) ;2
+                      (UnionFindEntry 3 1) ;3
+                      (UnionFindEntry 2 1) ;4
+              ))
+#| un after (find 1) and (find 9)
+        0      2    index 0 1 2 3 4 5 6 7 8 9
+      / /|\         id    0 0 2 0 8 0 5 8 0 3
+     / / | \        size  8 1 1 2 1 2 1 1 3 1 
+    1 3  5  8
+      |  |  |\     
+      9  6  4 7
+|#
 
 ; The code below gives a clean way to test your union-find code. The
 ; idea is that you write a “script” consisting of “union” commands and
