@@ -77,7 +77,7 @@ Due: Thursday, Nov. 17 at 11:59 PM, via Canvas
 ; weight accordingly.
  (define (uf:reparent! child parent)
    (set-UnionFindEntry-id! child (UnionFindEntry-id parent))
-   (set-UnionFindEntry-size! parent (+ (UnionFindEntry-size child) 1)))
+   (set-UnionFindEntry-size! parent (+ (UnionFindEntry-size child) (UnionFindEntry-size parent))))
    
    
 ;;; My function is 5 lines ;;;;
@@ -110,66 +110,66 @@ In tree form:
 9   6
 
 |#
-(define un (vector (UnionFindEntry 0 8) ;0
-                   (UnionFindEntry 8 1) ;1
-                   (UnionFindEntry 2 1) ;2
-                   (UnionFindEntry 0 4) ;3
-                   (UnionFindEntry 8 1) ;4
-                   (UnionFindEntry 3 3) ;5
-                   (UnionFindEntry 5 1) ;6
-                   (UnionFindEntry 8 1) ;7
-                   (UnionFindEntry 0 4) ;8
-                   (UnionFindEntry 5 1));9
-  )
-                   
-(check-expect (vector (create 10) (uf:get-entry (create 5) 2))
-              (vector
-               (vector (UnionFindEntry 0 1)
-                       (UnionFindEntry 1 1)
-                       (UnionFindEntry 2 1)
-                       (UnionFindEntry 3 1)
-                       (UnionFindEntry 4 1)
-                       (UnionFindEntry 5 1)
-                       (UnionFindEntry 6 1)
-                       (UnionFindEntry 7 1)
-                       (UnionFindEntry 8 1)
-                       (UnionFindEntry 9 1))
-               (UnionFindEntry 2 1)))
-
-(check-expect (vector (find un 1) (find un 9) (find un 2) un)
-              (vector
-               0 0 2
-              (vector (UnionFindEntry 0 8) ;0
-                      (UnionFindEntry 0 1) ;1
-                      (UnionFindEntry 2 1) ;2
-                      (UnionFindEntry 0 2) ;3
-                      (UnionFindEntry 8 1) ;4
-                      (UnionFindEntry 0 2) ;5
-                      (UnionFindEntry 5 1) ;6
-                      (UnionFindEntry 8 1) ;7
-                      (UnionFindEntry 0 3) ;8
-                      (UnionFindEntry 3 1));9
-              ))
-(define ex (create 5))                       ; 0 1 2 3 4
-
-(check-expect  (begin (union! ex 0 1)        ; 1 1 2 3 4
-                      (union! ex 4 2)        ; 1 1 2 3 2
-                      (union! ex 1 2)       ; 1 2 2 3 2
-                      ex)
-              (vector (UnionFindEntry 1 1) ;0
-                      (UnionFindEntry 2 2) ;1
-                      (UnionFindEntry 2 4) ;2
-                      (UnionFindEntry 3 1) ;3
-                      (UnionFindEntry 2 1) ;4
-              ))
-#| un after (find 1) and (find 9)
-        0      2    index 0 1 2 3 4 5 6 7 8 9
-      / /|\         id    0 0 2 0 8 0 5 8 0 3
-     / / | \        size  8 1 1 2 1 2 1 1 3 1 
-    1 3  5  8
-      |  |  |\     
-      9  6  4 7
-|#
+;(define un (vector (UnionFindEntry 0 8) ;0
+;                   (UnionFindEntry 8 1) ;1
+;                   (UnionFindEntry 2 1) ;2
+;                   (UnionFindEntry 0 4) ;3
+;                   (UnionFindEntry 8 1) ;4
+;                   (UnionFindEntry 3 3) ;5
+;                   (UnionFindEntry 5 1) ;6
+;                   (UnionFindEntry 8 1) ;7
+;                   (UnionFindEntry 0 4) ;8
+;                   (UnionFindEntry 5 1));9
+;  )
+;                   
+;(check-expect (vector (create 10) (uf:get-entry (create 5) 2))
+;              (vector
+;               (vector (UnionFindEntry 0 1)
+;                       (UnionFindEntry 1 1)
+;                       (UnionFindEntry 2 1)
+;                       (UnionFindEntry 3 1)
+;                       (UnionFindEntry 4 1)
+;                       (UnionFindEntry 5 1)
+;                       (UnionFindEntry 6 1)
+;                       (UnionFindEntry 7 1)
+;                       (UnionFindEntry 8 1)
+;                       (UnionFindEntry 9 1))
+;               (UnionFindEntry 2 1)))
+;
+;(check-expect (vector (find un 1) (find un 9) (find un 2) un)
+;              (vector
+;               0 0 2
+;              (vector (UnionFindEntry 0 8) ;0
+;                      (UnionFindEntry 0 1) ;1
+;                      (UnionFindEntry 2 1) ;2
+;                      (UnionFindEntry 0 2) ;3
+;                      (UnionFindEntry 8 1) ;4
+;                      (UnionFindEntry 0 2) ;5
+;                      (UnionFindEntry 5 1) ;6
+;                      (UnionFindEntry 8 1) ;7
+;                      (UnionFindEntry 0 3) ;8
+;                      (UnionFindEntry 3 1));9
+;              ))
+;(define ex (create 5))                       ; 0 1 2 3 4
+;
+;(check-expect  (begin (union! ex 0 1)        ; 1 1 2 3 4
+;                      (union! ex 4 2)        ; 1 1 2 3 2
+;                      (union! ex 1 2)       ; 1 2 2 3 2
+;                      ex)
+;              (vector (UnionFindEntry 1 1) ;0
+;                      (UnionFindEntry 2 2) ;1
+;                      (UnionFindEntry 2 4) ;2
+;                      (UnionFindEntry 3 1) ;3
+;                      (UnionFindEntry 2 1) ;4
+;              ))
+;#| un after (find 1) and (find 9)
+;        0      2    index 0 1 2 3 4 5 6 7 8 9
+;      / /|\         id    0 0 2 0 8 0 5 8 0 3
+;     / / | \        size  8 1 1 2 1 2 1 1 3 1 
+;    1 3  5  8
+;      |  |  |\     
+;      9  6  4 7
+;|#
 
 ; The code below gives a clean way to test your union-find code. The
 ; idea is that you write a “script” consisting of “union” commands and
@@ -209,31 +209,31 @@ In tree form:
         (interpret-command (first script)))))
 
 ; Now some example tests:
-;
-;(check-expect
-; (run-script 10 '())
-; '())
-;
-;(check-expect
-; (run-script 10
-;   '((same 0 1)
-;     (same 0 2)
-;     (same 0 3)))
-; '(#false #false #false))
-;
-;(check-expect
-; (run-script 10
-;   '((same 0 1)
-;     (union 0 1)
-;     (same 0 1)
-;     (union 1 2)
-;     (union 2 3)
-;     (same 0 3)
-;     (same 0 4)))
-; '(#false #true #true #false))
+
+(check-expect
+ (run-script 10 '())
+ '())
+
+(check-expect
+ (run-script 10
+   '((same 0 1)
+     (same 0 2)
+     (same 0 3)))
+ '(#false #false #false))
+
+(check-expect
+ (run-script 10
+   '((same 0 1)
+     (union 0 1)
+     (same 0 1)
+     (union 1 2)
+     (union 2 3)
+     (same 0 3)
+     (same 0 4)))
+ '(#false #true #true #false))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; PART II: KRUSKAL’S MST ALGORITHM ;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
