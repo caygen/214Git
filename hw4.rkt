@@ -135,16 +135,16 @@ In tree form:
                        (UnionFindEntry 8 1)
                        (UnionFindEntry 9 1))
                (UnionFindEntry 2 1)))
-#|
+
 (check-expect (vector (find un 1) (find un 2) un)
               (vector
                0 2
-              (vector (UnionFindEntry 0 10) ;0
+              (vector (UnionFindEntry 0 9) ;0
                       (UnionFindEntry 0 1) ;1
                       (UnionFindEntry 2 1) ;2
                       (UnionFindEntry 0 4) ;3
                       (UnionFindEntry 8 1) ;4
-                      (UnionFindEntry 3 3) ;5
+                      (UnionFindEntry 0 3) ;5
                       (UnionFindEntry 5 1) ;6
                       (UnionFindEntry 8 1) ;7
                       (UnionFindEntry 0 3) ;8
@@ -158,7 +158,6 @@ In tree form:
       5 7   4
      / \
     9   6
-|#
 |#
 (define ex (create 5))                       ; 0 1 2 3 4
 
@@ -311,7 +310,15 @@ In tree form:
 ;; Returns the minimum spanning forest for a given graph, represented as
 ;; another graph.
 (define (kruskal-mst g)
-  ...)
+  (define uf (create (graph-size g)))
+  (define graph (make-graph (graph-size g)))
+  (for ((i (get-all-edges/increasing g)))
+    (if (not (same-set? uf (list-ref i 0)(list-ref i 1)))
+        (begin
+          (union! uf (list-ref i 0)(list-ref i 1))
+          (set-edge! graph (list-ref i 0)(list-ref i 1)(get-edge g (list-ref i 0)(list-ref i 1))))
+        (void)))
+  (return graph))
 ;;;; my function is 14 lines, using several helpers (below) ;;;;
 
 
@@ -322,8 +329,20 @@ In tree form:
 ;; get-all-edges/increasing : WUGraph -> [List-of (list Vertex Vertex)]
 ;; Gets a list of all the edges in the graph sorted by increasing weight;
 ;; includes only one (arbitrary) direction for each edge.
-(define (get-all-edges/increasing g)...)
-;;;; my function is 4 lines ;;;;
+
+;; what i did: try to define a inequality symbol that looks at the edges in the graph and compares them.
+;; set up a heap with lt?  == edge<? and data void
+;; insert into that heap in hopes that it will sort according to the edge comparison
+;; return a list of vector heap data since I had to convert it to a vector at some point.$
+(define (get-all-edges/increasing g)
+  (define (edge<? l1 l2)
+    (if (< (get-edge g (list-ref l1 0)(list-ref l1 1))(get-edge g (list-ref l2 0)(list-ref l2 1)))
+        (return #t)
+        (return #f)))
+  (define sorted-edges (heap-sort edge<? (get-all-edges g)))
+  (return sorted-edges))
+
+
 
 ;; get-all-edges : WUGraph -> [List-of (list Vertex Vertex)]
 ;; Gets all the edges in a graph as a list of 2-element lists; includes
@@ -344,6 +363,26 @@ In tree form:
            (set! i (add1 i)))))
        (set! j (add1 j)))
   (return edgelist))
+
+;; get-all-edges-with-weights : WUGraph -> [List-of (list Vertex Vertex N)]
+;; Gets all the edges in a graph as a list of 2-element lists; includes
+;; only one (arbitrary) direction for each edge.
+(define (get-all-edges-with-weights g)
+  (define edgelist '())
+  (define n (graph-size g))
+  (define j 0)
+  (define i 0)
+  (while (not(equal? j (- n 1)))
+    (begin
+      (set! i (+ j 1))
+      (while (not (equal? i n))
+         (begin
+           (if (not (equal? (get-edge g j i) #f))
+               (set! edgelist (append edgelist (list(list j i (get-edge g j i)))))
+               (void))
+           (set! i (add1 i)))))
+       (set! j (add1 j)))
+  (return edgelist))
     
 
 (define GRAPH2 (WUGraph (vector (vector #false 5 #false #false #false #false)
@@ -355,11 +394,174 @@ In tree form:
   (get-all-edges GRAPH2)
     
 ;;;; my function is 13 lines ;;;;
-
+;----------------------------------------------------------
 ;; heap-sort : [Ord X] [List-of X] -> [List-of X]
 ;; Sorts a list based on the given less-than function.
 (define (heap-sort lt? xs)
-  ...)
+  (define h (createh (vector-length (list->vector xs)) lt?))
+  (for ((i xs))
+    (insert! h i))
+  (define sortededgelist '())
+  (define z 0)
+  (while (< z (vector-length (heap-data h)))
+         (begin
+          (set! sortededgelist (append sortededgelist  (list (find-min h))))
+          (remove-min! h)
+          (set! z (+ 1 z))))
+  (return sortededgelist))
+  
+
+; A [Heap-of X] is (make-heap Natural [Ord X] [Vector-of X])
+(define-struct heap [size lt? data])
+; create : N [Ord X] -> [Heap-of X]
+; Creates a new heap with capacity `capacity` and order `lt?`.
+(define (createh capacity lt?)
+  (make-heap 0 lt? (make-vector capacity #false)))
+
+; insert! : [Heap-of X] X -> Void
+; Adds an element to a heap.
+; Error if the heap has reached capacity and cannot grow further.
+(define (insert! heap new-element)
+  (begin
+    (set-heap-data! heap (heap-data (ensure-size! heap)))
+    (hset! heap (heap-size heap) new-element)
+    (bubble-up! heap (heap-size heap))
+    (set-heap-size! heap (+ (heap-size heap) 1))
+    ))
+
+; find-min : [Heap-of X] -> X
+; Returns the least element in the heap.
+; Error if the heap is empty.
+(define (find-min heap)
+  (if (= (heap-size heap) 0)
+      (error "Heap empty")
+      (href heap 0)))
+    
+; remove-min! : [Heap-of X] -> Void
+; Removes the least element in the heap.
+; Error if the heap is empty.
+(define (remove-min! heap)
+  (cond
+    ((= (heap-size heap) 0) (error "Heap empty" ))
+    (else (begin
+           (define ret (href heap 0))
+           (hset! heap 0 (href heap (- (heap-size heap)1)))
+           (hset! heap (- (heap-size heap) 1) #false)
+           (set-heap-size! heap (-(heap-size heap)1))
+           (percolate-down! heap 0)
+           ))))
+;(define (ensure-size! h)
+;  (if (> (vector-length (heap-data h)) (heap-size h)) #t (error "Capacity full")))
+
+(define (ensure-size! h)
+  (if (> (vector-length (heap-data h)) (heap-size h))
+      h
+      (begin
+          (define new (createh (* 2 (heap-size h)) (heap-lt? h)))
+          (set-heap-size! new (heap-size h))
+          (let copy ([i 0])
+            (if (>= i (heap-size h)) new (begin
+                                           (hset! new i (href h i))
+                                           (copy (+ 1 i))))))))
+;;;; my function is 3 lines ;;;;
+
+; heap:percolate-down! : [Heap-of X] N -> Void
+; Restores the heap invariant by percolating down, starting with the element
+; at `index`.
+
+;;time complexity == O(log n) b/c bubble-up!
+(define (percolate-down! h i)
+  (define schildind (find-smaller-child h i))
+  (if (not  (equal? schildind #f))
+      (if (not ((heap-lt? h) (href h i) (href h schildind)))
+          (begin
+            (bubble-up! h schildind)
+            (percolate-down! h schildind))
+          (void))
+      (void)))
+;;;; my function is 8 lines ;;;;
+
+; heap:find-smaller-child : [Heap-of X] N -> [Maybe N]
+; Finds the index of the smaller child of node `index`, or `#false` if
+; it has no children.
+
+;;time complexity == O(1) b/c no recursion or loop
+(define (find-smaller-child h i)
+  (if (>= (left i)(heap-size h))
+      (equal? 1 0)
+      (if (and (< (right i)(heap-size h)) ((heap-lt? h) (href h (right i))(href h (left i))))
+          (right i)
+          (left i))))
+;;;; my function is 9 lines ;;;;
+
+;; DONE
+; heap:bubble-up! : [Heap-of X] N -> Void
+; Restores the heap invariant by bubbling up the element at `index`.
+
+;;time complexity == O(log n) b/c recursive and the # of recursion = height of the tree, which is O(log n) b/c complete tree
+(define (bubble-up! h i)
+  (cond
+    ((= i 0) (void))
+    ((hlt? h (parent i) i) (void))
+    (else
+     (begin
+       (swap! h i (parent i))
+       (bubble-up! h (parent i))))))
+;;;; my function is 6 lines ;;;;
+
+;; DONE
+; heap:ref : [Heap-of X] N -> X
+; Gets the heap element at `index`.
+(define (href h i)
+  (vector-ref (heap-data h) i))
+;;;; my function is 2 lines ;;;;
+
+;; DONE
+; heap:set! : [Heap-of X] N X -> Void
+; Sets the heap element at `index`.
+(define (hset! h i element)
+  (vector-set! (heap-data h) i element))
+;;;; my function is 2 lines ;;;;
+
+;; DONE
+; heap:swap! : [Heap-of X] N N -> Void
+; Swaps the heap elements at indices `i` and `j`.
+(define (swap! h i j)
+  (define temp 0)
+  (begin
+    (set! temp (href h i))
+    (hset! h i (href h j))
+    (hset! h j temp)))
+
+;; DONE
+; heap:lt? : [Heap-of X] N N -> Boolean
+; Returns whether the element at `i` is less than the element at `j`
+; using the heap's order.
+(define (hlt? h i j)
+  ((heap-lt? h) (href h i) (href h j)))
+;;;; my function is 2 lines ;;;;
+
+;; DONE
+; heap:left : N -> N+
+; Computes the index of the left child of the given index.
+(define (left i)
+  (+ (* i 2) 1))
+;;;; my function is 2 lines ;;;;
+
+;; DONE
+; heap:right : N -> N+
+; Computes the index of the left child of the given index.
+(define (right i)
+  (+ (* i 2) 2))
+;;;; my function is 2 lines ;;;;
+
+;; DONE
+; heap:parent : N+ -> N
+; Computes the index of the parent of the given index.
+(define (parent i)
+  (floor (/ (- i 1) 2)))
+;----------------------------------------------------------
+  
 ;;;; my function is 10 lines ;;;;
 ;; [Impl. note: a heap sort works by inserting every element into a heap
 ;; and then removing every element, which yields the elements in sorted
