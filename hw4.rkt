@@ -135,7 +135,7 @@ In tree form:
                        (UnionFindEntry 8 1)
                        (UnionFindEntry 9 1))
                (UnionFindEntry 2 1)))
-
+#|
 (check-expect (vector (find un 1) (find un 2) un)
               (vector
                0 2
@@ -150,6 +150,7 @@ In tree form:
                       (UnionFindEntry 0 3) ;8
                       (UnionFindEntry 5 1));9
               ))
+|#
 #|result should look like:
           0         2
          /|\
@@ -391,7 +392,7 @@ In tree form:
                                 (vector #false 3 #false #false 4 6)
                                 (vector #false #false 2 4 #false #false)
                                 (vector #false #false 7 6 #false #false))))
-  (get-all-edges GRAPH2)
+; (get-all-edges GRAPH2)
     
 ;;;; my function is 13 lines ;;;;
 ;----------------------------------------------------------
@@ -585,67 +586,147 @@ In tree form:
 
 ;; build-graph : N [List-of (list Vertex Vertex Weight)] -> WUGraph
 ;; Returns a new graph of n vertices containing the given edges.
-;(define (build-graph n edges)
-;  (local [(define new-graph (make-graph n))]
-;    (begin
-;      (map (lambda (edge)
-;             (set-edge! new-graph (first edge) (second edge) (third edge)))
-;           edges)
-;      new-graph)))
-;
-;(define EXAMPLE-GRAPH-0
-;  (build-graph 6
-;               '((0 1 5)
-;                 (0 2 7)
-;                 (0 3 2)
-;                 (1 4 9)
-;                 (1 5 6)
-;                 (3 5 0)
-;                 (3 4 1))))
-;
-;(check-expect (graph-size EXAMPLE-GRAPH-0) 6)
-;(check-expect (get-edge EXAMPLE-GRAPH-0 0 1) 5)
-;(check-expect (get-edge EXAMPLE-GRAPH-0 1 0) 5)
-;(check-expect (get-edge EXAMPLE-GRAPH-0 0 2) 7)
-;(check-expect (get-edge EXAMPLE-GRAPH-0 2 0) 7)
-;(check-expect (get-edge EXAMPLE-GRAPH-0 3 5) 0)
-;(check-expect (get-edge EXAMPLE-GRAPH-0 5 3) 0)
-;(check-expect (get-edge EXAMPLE-GRAPH-0 0 4) #false)
-;(check-expect (get-edge EXAMPLE-GRAPH-0 4 0) #false)
-;
-;;; Note that my get-adjacent returns a sorted list, but yours doesn’t
-;;; need to---and if it doesn’t then you will have to modify these tests.
-;(check-expect (get-adjacent EXAMPLE-GRAPH-0 0) '(1 2 3))
-;(check-expect (get-adjacent EXAMPLE-GRAPH-0 1) '(0 4 5))
-;(check-expect (get-adjacent EXAMPLE-GRAPH-0 5) '(1 3))
-;
-;;; This graph looks like a "wagon wheel" with six spokes emanating from
-;;; vertex 6 in the center. The weights of the spokes are mostly less
-;;; than the weights along the perimeter, except that 3 is closer to 2
-;;; than it is to 6. Thus, the resulting MST is all spokes except that it
-;;; connects 3 to 2 rather than to 6.
-;(define EXAMPLE-GRAPH-1
-;  (build-graph 7
-;               '((0 1 3)
-;                 (1 2 3)
-;                 (2 3 1)
-;                 (3 4 3)
-;                 (4 5 3)
-;                 (6 0 2)
-;                 (6 1 2)
-;                 (6 2 2)
-;                 (6 3 3)
-;                 (6 4 2)
-;                 (6 5 2))))
-;
-;(define EXAMPLE-MST-1 (kruskal-mst EXAMPLE-GRAPH-1))
-;
-;(check-expect (get-adjacent EXAMPLE-MST-1 0) '(6))
-;(check-expect (get-adjacent EXAMPLE-MST-1 1) '(6))
-;(check-expect (get-adjacent EXAMPLE-MST-1 2) '(3 6))
-;(check-expect (get-adjacent EXAMPLE-MST-1 3) '(2))
-;(check-expect (get-adjacent EXAMPLE-MST-1 4) '(6))
-;(check-expect (get-adjacent EXAMPLE-MST-1 5) '(6))
-;(check-expect (get-adjacent EXAMPLE-MST-1 6) '(0 1 2 4 5))
+(define (build-graph n edges)
+  (local [(define new-graph (make-graph n))]
+    (begin
+      (map (lambda (edge)
+             (set-edge! new-graph (first edge) (second edge) (third edge)))
+           edges)
+      new-graph)))
+
+(define EXAMPLE-GRAPH-0
+  (build-graph 6
+               '((0 1 5)
+                 (0 2 7)
+                 (0 3 2)
+                 (1 4 9)
+                 (1 5 6)
+                 (3 5 0)
+                 (3 4 1))))
+
+(check-expect (graph-size EXAMPLE-GRAPH-0) 6)
+(check-expect (get-edge EXAMPLE-GRAPH-0 0 1) 5)
+(check-expect (get-edge EXAMPLE-GRAPH-0 1 0) 5)
+(check-expect (get-edge EXAMPLE-GRAPH-0 0 2) 7)
+(check-expect (get-edge EXAMPLE-GRAPH-0 2 0) 7)
+(check-expect (get-edge EXAMPLE-GRAPH-0 3 5) 0)
+(check-expect (get-edge EXAMPLE-GRAPH-0 5 3) 0)
+(check-expect (get-edge EXAMPLE-GRAPH-0 0 4) #false)
+(check-expect (get-edge EXAMPLE-GRAPH-0 4 0) #false)
+
+;; Note that my get-adjacent returns a sorted list, but yours doesn’t
+;; need to---and if it doesn’t then you will have to modify these tests.
+(check-expect (get-adjacent EXAMPLE-GRAPH-0 0) '(1 2 3))
+(check-expect (get-adjacent EXAMPLE-GRAPH-0 1) '(0 4 5))
+(check-expect (get-adjacent EXAMPLE-GRAPH-0 5) '(1 3))
+
+;; This graph looks like a "wagon wheel" with six spokes emanating from
+;; vertex 6 in the center. The weights of the spokes are mostly less
+;; than the weights along the perimeter, except that 3 is closer to 2
+;; than it is to 6. Thus, the resulting MST is all spokes except that it
+;; connects 3 to 2 rather than to 6.
+(define EXAMPLE-GRAPH-1
+  (build-graph 7
+               '((0 1 3)
+                 (1 2 3)
+                 (2 3 1)
+                 (3 4 3)
+                 (4 5 3)
+                 (6 0 2)
+                 (6 1 2)
+                 (6 2 2)
+                 (6 3 3)
+                 (6 4 2)
+                 (6 5 2))))
+
+(define EXAMPLE-MST-1 (kruskal-mst EXAMPLE-GRAPH-1))
+
+(check-expect (get-adjacent EXAMPLE-MST-1 0) '(6))
+(check-expect (get-adjacent EXAMPLE-MST-1 1) '(6))
+(check-expect (get-adjacent EXAMPLE-MST-1 2) '(3 6))
+(check-expect (get-adjacent EXAMPLE-MST-1 3) '(2))
+(check-expect (get-adjacent EXAMPLE-MST-1 4) '(6))
+(check-expect (get-adjacent EXAMPLE-MST-1 5) '(6))
+(check-expect (get-adjacent EXAMPLE-MST-1 6) '(0 1 2 4 5))
 
 ;; You probably need more tests than these.
+;;-----------------------------------------
+;;-----------------------------------------
+;;-----------------------------------------
+;;-----------------------------------------
+;;-----------------------------------------
+;;-----------------------------------------
+
+(define uf1_ (create 10))
+(check-expect (same-set? uf1_ 0 1) #f)
+(check-expect (same-set? uf1_ 0 2) #f)
+(check-expect (same-set? uf1_ 0 3) #f)
+
+(define uf2_ (create 10))
+(check-expect (same-set? uf2_ 0 1) #f)
+(union! uf2_ 0 1)
+(check-expect (same-set? uf2_ 0 1) #t)
+(union! uf2_ 1 2)
+(union! uf2_ 2 3)
+(check-expect (same-set? uf2_ 0 3) #t)
+(check-expect (same-set? uf2_ 0 4) #f)
+(check-expect (same-set? uf2_ 2 3) #t)
+
+(define bprime 196613)
+(define bn1 25000)
+(define bn2 50000)
+(define bn3 75000)
+(define bn 100000)
+(define uf3_ (create bn))
+(define (hash__ i) (modulo (* bprime i) bn))
+(check-expect (same-set? uf3_ (hash__ 3) (hash__ 50)) #f)
+
+(for-each (lambda (x) (union! uf3_ (hash__ x) (hash__ (add1 x)))) (range 0 bn1 1))
+(for-each (lambda (x) (union! uf3_ (hash__ 0) (hash__ x))) (range bn1 bn2 1))
+(check-expect (same-set? uf3_ (hash__ 4) (hash__ (- (/ bn 2) 4))) #t)
+(check-expect (same-set? uf3_ (hash__ 3) (hash__ (- bn 4))) #f)
+
+(for-each (lambda (x) (union! uf3_ (hash__ x) (hash__ (add1 bn2)))) (range (add1 bn2) bn3 1))
+(for-each (lambda (x) (union! uf3_ (hash__ (- bn3 1)) (hash__ x))) (range bn3 bn 1))
+(check-expect (same-set? uf3_ (hash__ (+ (/ bn 2) 3)) (hash__ (- bn 4))) #t)
+(check-expect (same-set? uf3_ (hash__ 3) (hash__ (- bn 4))) #f)
+
+(define (sort__ lst)
+  (cond
+    [(or (empty? lst) (empty? (rest lst)))
+     lst]
+    [else
+      (define pivot (first lst))
+      (define non-pivot (rest lst))
+      (define before (filter (lambda (x) (< x pivot)) non-pivot))
+      (define after (filter (lambda (x) (>= x pivot)) non-pivot))
+      (append (sort__ before) (cons pivot (sort__ after)))]))
+
+
+(define EXAMPLE-GRAPH-1__
+  (build-graph 7
+               '((0 1 3)
+                 (1 2 3)
+                 (2 3 1)
+                 (3 4 3)
+                 (4 5 3)
+                 (6 0 2)
+                 (6 1 2)
+                 (6 2 2)
+                 (6 3 3)
+                 (6 4 2)
+                 (6 5 2))))
+
+(define EXAMPLE-MST-1__ (kruskal-mst EXAMPLE-GRAPH-1__))
+
+(check-expect (sort__ (get-adjacent EXAMPLE-MST-1 0)) '(6))
+(check-expect (sort__ (get-adjacent EXAMPLE-MST-1 1)) '(6))
+(check-expect (sort__ (get-adjacent EXAMPLE-MST-1 2)) '(3 6))
+(check-expect (sort__ (get-adjacent EXAMPLE-MST-1 3)) '(2))
+(check-expect (sort__ (get-adjacent EXAMPLE-MST-1 4)) '(6))
+(check-expect (sort__ (get-adjacent EXAMPLE-MST-1 5)) '(6))
+(check-expect (sort__ (get-adjacent EXAMPLE-MST-1 6)) '(0 1 2 4 5))
+
+ ; (display score)
+  ;(display rpt)
+  ;(display "\n")
