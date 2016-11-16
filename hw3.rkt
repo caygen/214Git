@@ -71,6 +71,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
            (define ret (href heap 0))
            (hset! heap 0 (href heap (- (heap-size heap)1)))
            (hset! heap (- (heap-size heap) 1) #false)
+           (set-heap-size! heap (-(heap-size heap)1))
            (percolate-down! heap 0)
            ))))
 ;;;; my function is 9 lines (but see helpers below) ;;;;
@@ -119,7 +120,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 (define (percolate-down! h i)
   (define schildind (find-smaller-child h i))
   (if (not  (equal? schildind #f))
-      (if (> (href h i) (href h schildind))
+      (if (not ((heap-lt? h) (href h i) (href h schildind)))
           (begin
             (bubble-up! h schildind)
             (percolate-down! h schildind))
@@ -135,7 +136,7 @@ Due: Thursday, November 3, at 11:59 PM, on Canvas
 (define (find-smaller-child h i)
   (if (>= (left i)(heap-size h))
       (equal? 1 0)
-      (if (and (< (right i)(heap-size h)) (<= (href h (right i))(href h (left i))))
+      (if (and (< (right i)(heap-size h)) ((heap-lt? h) (href h (right i))(href h (left i))))
           (right i)
           (left i))))
 ;;;; my function is 9 lines ;;;;
